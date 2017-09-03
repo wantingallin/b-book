@@ -3,6 +3,8 @@
 
 #### 2.1 张量（Tensor）
 Pytorch的运算单元叫做Tensor（张量）。我们可以将张量理解为一个多维数组，一阶张量即为一维数组，通常叫做向量（vector）；二阶张量即为二维数组，通常叫做矩阵（matrix）；三阶张量即为三维数组；n阶张量即为n维数组，有n个下标。
+![alt](https://images-cdn.shimo.im/aWDUNHOuvVsIJMlF/%E5%9B%BE%E7%89%8728.png!thumbnail)
+
 
 首先，让我们看看该如何定义张量。
 
@@ -15,22 +17,20 @@ import torch
 创建一个5*3的二阶张量，随机矩阵：
 
 
-```python
+``` Python
 x=torch.rand(5,3) 
-'''
-
+```
 
 创建一个5*3的全是1的张量，全是1的矩阵：
 
-
-```python
+```Python
 x=torch.ones(5,3) 
 ```
 
 创建一个5*3的全是0的张量，全是0的矩阵：
 
 
-```python
+```Python
 x=torch.zeros(5,3) 
 ```
 
@@ -38,13 +38,13 @@ Numpy中的array也是一个n维数组，那么Numpy中的array和Pytorch中的t
 那Pytorch是如何在GPU上使用tensor呢？通常的做法是需要判断你的计算机是否能够使用GPU，判断语句为：
 
 
-```python
+```Python
 torch.cuda.is_available()
 ```
 
 如果输出是yes，则表明可以将tensor放到GPU上面进行运算，则只需要将你定义的tenor转化到GPU上即可，例如，将x,y放到GPU上，则你只需要
 
-```python
+```Python
 x=x.cuda()
 y=y.cuda() 
 print(x+y)
@@ -56,38 +56,38 @@ print(x+y)
 
 从numpy到tensor的转化：
 
-```python
+```Python
 torch.from_numpy(a)
-```； 
+``` 
 
 从tensor到numpy的转化：
 
-```python
+```Python
 a.numpy()
 ```
 。 
 首先生成torch.tensor与numpy 的array
 
-```python
+```Python
 x_tensor=torch.randn(2,3) 
 y_numpy=np.random.randn(2,3)
 ```
 
 将tensor转化为numpy：
 
-```python
+```Python
 x_numpy=x_tensor.numpy()
 ```
 
 
 将numpy转化为tensor：
 
-```python
+```Python
 y_tensor=torch.from_numpy(x_torch)
 ```
 
 张量的加法运算：（前提是张量的尺寸一样，矩阵一样，符合矩阵加法运算）
-```python
+```Python
 x=torch.zeros(5,3)  
 y=torch.ones(5,3)  
 z=x+y
@@ -95,9 +95,10 @@ z=x+y
 
 张量的乘法（mm：matrix multiple）要符合矩阵运算的法则：
 
-```python
+```Python
 q=x.mm(y.t)
 ```
+
 
 其中y.t表示矩阵y的转置 
 张量的基本运算语法有很多，包括换位、索引、切片、数学运算、线性算法和随机数等等。详见：torch - Pytorch 0.1.9 documentation。
@@ -111,25 +112,27 @@ q=x.mm(y.t)
 传统的深度学习框架，例如TensorFlow、Theano等都采用了静态计算图技术。Pytorch相比与Tensorflow来说，最大的特点是它可以动态地构建计算图。这就使得我们构造计算图更加简便、容易，而且很容易进行调试、追踪。
 
 那么，究竟什么是计算图（Computational Graph）呢？它实际上是一种描述、记录Tensor的运算过程的抽象图模型。一张计算图包括两类节点，分别是变量（Variable）和运算（Computation）。图上的有向连边表示的是运算上的一种前后顺序。当我们在PyTorch中用自动微分型变量（Autograd）进行运算的时候，无论这个计算过程多么地复杂，系统都会自动地构造一张计算图来记录所有的运算过程。在构建好动态计算图之后，我们可以非常方便地利用“.backward()”函数来自动地进行反向传播算法，从而计算每一个变量的梯度信息。而这一切的实现都需要自动微分变量的支持。
+
+
 自动微分变量（Atuograd.Variable）
 为了解释动态计算图，需要先了解一个重要的命令，叫做自动微分变量（atuograd.Variable）这是一种新的数据结构，Variable 和tensor有什么区别呢？tensor只是一种张量的数据形式，可以进行多种运算，但是无法构建计算图。而对于Variable的所有运算都可以自动构建计算图。
 
 它是怎么做到的呢？Variable包含了三个重要的参数，如下图：
+![alt](https://images-cdn.shimo.im/yJONQ2Ns0JcfQKX4/%E5%9B%BE%E7%89%8729.png!thumbnail)
 
-
-补充Variable数据结构的图
 
 变量Variable不仅保存了tensor形式的数据data（即计算图中的节点），还保存产生这个Variable的计算，通过.grad_fn（老版本是creator）我们可以查看是哪个运算导致了现在这个Variable的出现。另外，每个Variable还有.grad用于存储variable的梯度值。当正向运算结束之后，在反向传播阶段，我们只需要通过调用”.backward “，就可以计算反向传播的梯度信息，并将叶节点的导数值存储在”.grad“中。
 动态计算图实例演示
 让我们举一个小例子，比如我们通过Pytorch构建y=x+2的计算图，对应的Pytorch语句为：
 首先导入Pytorch中自动微分变量
-```python
+
+```Python
 from torch.autograd import Variable
 ```
 
 创建一个叶节点Variable，包裹了一个2*2张量x，将需要计算梯度属性置为True
 
-```python
+```Python
 x = Variable(torch.ones(2, 2), requires_grad=True)  
 ```
 
@@ -151,9 +154,7 @@ y = x + 2
 
 在执行y=x+2的过程中，系统已经开始自动构建了动态计算图，如下图所示：
 
-
-
-
+![alt](https://images-cdn.shimo.im/83eILfbcL8MV7ds5/%E5%9B%BE%E7%89%8733.png!thumbnail)
 
 
 接着，我们再进行函数运算z=y∗y,得到variable z
@@ -162,32 +163,22 @@ z = y * y
 <torch.autograd._functions.basic_ops.Mul at 0x1167f7048>
 由上述表示可知.grad_fn储存的是函数的信息，.Mul表示函数进行的运算是乘法。此时，动态计算图更新为：
 
+![alt](https://images-cdn.shimo.im/BobSdfncpnwcHlLC/%E5%9B%BE%E7%89%8734.png!thumbnail)
 
-
-
-
-
-接下来，让我们看看z中的计算结果
+接下来，让我们看看z中的计算结果:
 z.data 
 用.data返回一个Variable所包裹的Tensor。 它的输出信息为：
 
-
-
-
-
-
+### 代写
 
 此时，假设我们完成了整个运算过程的构建。至此，我们知道，整个计算过程实际上完成了一个符合函数的构建：
-
-
-
+![alt](
 
 
 这实际上就是一个多层的广义神经网络。最后的动态计算图为：
 
 
-
-
+![alt](https://images-cdn.shimo.im/QGlKEtH9ZLkRsnrX/%E5%9B%BE%E7%89%8732.png!thumbnail)
 
 
 
