@@ -168,6 +168,12 @@ z = y * y
 接下来，让我们看看z中的计算结果:
 z.data 
 用.data返回一个Variable所包裹的Tensor。 它的输出信息为：
+```Python
+9  9
+9  9
+[torch.FloatTensor of size 2x2]
+```
+
 
 ### 代写
 
