@@ -169,7 +169,6 @@ z = y * y
 z.data 
 用.data返回一个Variable所包裹的Tensor。 它的输出信息为：
 
-
 ### 代写
 
 此时，假设我们完成了整个运算过程的构建。至此，我们知道，整个计算过程实际上完成了一个符合函数的构建：
@@ -236,7 +235,7 @@ z = torch.mean(s)
 这个过程的动态计算图为：
 
 
-![alt](
+![alt](https://images-cdn.shimo.im/fGihZNY8aiAJFE5q/%E5%9B%BE%E7%89%8734.png!thumbnail)
 
 
 同样，我们可以很轻松地计算叶节点变量的梯度信息：
