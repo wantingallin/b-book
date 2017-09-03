@@ -169,58 +169,83 @@ z = y * y
 z.data 
 用.data返回一个Variable所包裹的Tensor。 它的输出信息为：
 
+
 ### 代写
 
 此时，假设我们完成了整个运算过程的构建。至此，我们知道，整个计算过程实际上完成了一个符合函数的构建：
-![alt](
-
+z=y^2=(x+2)^2
 
 这实际上就是一个多层的广义神经网络。最后的动态计算图为：
-
 
 ![alt](https://images-cdn.shimo.im/QGlKEtH9ZLkRsnrX/%E5%9B%BE%E7%89%8732.png!thumbnail)
 
 
-
-
-
-
 接下来，我们可以希望知道，如果x发生了一些小的变化\delta X，z会发生多大的变化；或者反过来，如果我们观察到了z的小变化\delta z，那么它是由x多大的变化\delta x所引起的呢？这相当于要计算导数：
 
-
+\partial \delta z  /  \partial \delta x
 
 通过.backward来进行梯度的反向传播，我们可以得到这个导数信息：
 z.backward()  
 之后，我们可以用z.grad来进行查看叶节点的梯度信息，
 
+```Python
 print(z.grad)
 print(y.grad)
 print(x.grad)
+```
+
 注意，由于z和y都不是叶子节点，所以都没有梯度信息。
 
 得到的输出应该是：
+
+```Python
 NoneNoneVariable containing:
   1.5000  1.5000  1.5000  1.5000
 [torch.FloatTensor of size 2x2]
+```
+
 所以，梯度的计算可以自动化地进行，非常方便。无论函数依赖关系多么复杂，也无论神经网络有多深，我们都可以通过backward来完成梯度的自动计算，这就是动态计算图的优势。
 
 为了进一步理解backward()的厉害所在，也为了进一步理解动态计算图，让我们再来看一个例子：
+首先创建一个1*2的Variable（1维向量）s
+```Python
+s = Variable(torch.FloatTensor([[0.01, 0.02]]), requires_grad = True) 
+```
 
+创建一个2*2的矩阵型x
 
+```Python
+x = Variable(torch.ones(2, 2), requires_grad = True)
+```
+反复用s乘以x（矩阵乘法），注意s始终是variable
+
+```Python
+for i in range(10):
+    s = s.mm(x)  是1*2的Variable
+    
+```
+
+对s中的各个元素求均值，得到一个1*1的scalar（标量，即1*1张量）
+
+```Python
+z = torch.mean(s) 
+```
 
 
 
 这个过程的动态计算图为：
 
 
-
+![alt](
 
 
 同样，我们可以很轻松地计算叶节点变量的梯度信息：
 
-
-
-
+```Python
+z.backward() 
+print(x.grad)  
+print(s.grad) 
+```
 
 
 注意事项：
